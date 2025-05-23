@@ -48,7 +48,7 @@
 
 
 
-<!-- <section class="section">
+<section class="section">
   <div class="container">
     <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
@@ -56,19 +56,19 @@
     In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
     EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
   </div>
-</section> -->
+</section>
 
-
+<!-- 
 <section class="section">
   <div class="container">
     <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
     <ul style="margin-top: 1rem; padding-left: 1.5rem; list-style-type: disc;">
       <li><em>A camera pixel (left) primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path.</em></li>
-      <li><em>In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment. EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></li>
+      <li><em>In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes” from walls and other objects in the surrounding environment. EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></li>
     </ul>
   </div>
-</section>
+</section> -->
 
 
 <section class="section">
@@ -76,11 +76,11 @@
     <!-- <h3 class="title is-3">2. How can EchoNeRF solve a floorplan estimation problem?</h3> -->
     <h3 class="title is-3">2. What applications can EchoNeRF solve?</h3>
     <img src="./static/images/application.png" style="width: 100%;" alt="Floorplan application">
-    <p><em>While EchoNeRF is designed to teach multipath reflections to NeRFs and can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
+    <p><em>While EchoNeRF can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
       (a) User's device measures wireless signal power. 
       (b) Transmitted signals arrive at the device along a line of sight (LoS) path and after reflections from surrounding walls. 
       (c) Our LoS model estimates crude walls. 
-      (d) Our \( 1^{st}\)order reflection model refines the inner and outer walls. 
+      (d) Our first-order reflection model refines the inner and outer walls. 
       (e) Together, the floorplan is estimated which can then be used to predict signals at new locations.</em></p>
   </div>
 </section>
@@ -90,11 +90,11 @@
   <div class="container">
     <h2 class="title is-3">3. How do the voxels' opacity change over time?</h2>
      <div class="content"><p>We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
-      At the end, we also show the learning process of NeRF2, which is unable to solve the inverse problem.
+      At the end, we also show the learning process of NeRF2 (baseline), which is unable to solve the inverse problem.
      </p></div>
 
     <!-- Row 1: Ground Truth -->
-    <h3 class="title is-4">Ground truth images</h3>
+    <h3 class="title is-4">Ground Truth</h3>
     <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
       <div class="column is-one-quarter" style="padding-bottom: 0;">
         <img src="./static/images/2_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 1">
@@ -173,7 +173,7 @@
     <div class="content">
         <p>Surely!
           We can use several post-processing steps to improve the output of EchoNeRF.
-          Below, we show the raw images from EchoNeRF and the post-processed images.
+          Below, we show the raw images from EchoNeRF and the post-processed images—through traditional image processing and via diffusion models.
         </p>
     </div> 
     
@@ -196,9 +196,10 @@
       </div>
 
       <!-- Row 3: Post-Processed -->
-      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (via image processing)</h3>
+      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (image processing)</h3>
       <div class="content">
-        <p>We use the following post-processing steps to generate the final images:
+        <p>
+          <!-- We use the following post-processing steps to generate the final images: -->
           The estimated floorplan images are first binarized and then refined by applying morphological closing to fill small white gaps, followed by dilation to expand wall thickness. 
           A median blur is used to smooth the edges, and finally contour detection is applied to remove small black regions based on area.
         </p>
@@ -219,7 +220,7 @@
       </div>
 
 
-    <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (via diffusion models)</h3>
+    <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (diffusion models)</h3>
     <div class="content">
       <p>We can also use generative priors to improve the output of EchoNeRF.
         We first train a diffusion model (DDPM) on the ZInD dataset, which contains clean floorplans. 
@@ -281,25 +282,25 @@
 
 <section class="section">
   <div class="container">
-    <h2 class="title is-3">5. What (other) forward tasks can EchoNeRF solve once trained?</h2>
+    <h2 class="title is-3">5. What (other) forward tasks can EchoNeRF solve?</h2>
 
     <div class="content">
       <p>To demonstrate that EchoNeRF solves the true inverse problem, we perform the following tasks:
       <ul style="margin-left: 1.5rem;">
         <li>
-          <strong>Room Impulse Response (RIR) Prediction:</strong> 
-          We randomly select a Tx-Rx pair inside the floorplan and generate the RIRs using the Sionna Simulator. This is done for both the ground truth and post-processed floorplans.
+          <strong>Channel Impulse Response (CIR) Prediction:</strong> 
+          We randomly select a Tx-Rx pair inside the floorplan and generate the CIRs using the NVIDIA's Sionna Simulator. This is done for both the ground truth and post-processed floorplans.
         </li>
         <li>
-          <strong>Basic Raytracing:</strong> 
-          We simulate higher-order reflections (up to order 3) using the Sionna engine. Raytracing visuals below show Tx-Rx locations and echo paths for both ground truth and predicted maps.
+          <strong>Basic Ray tracing:</strong> 
+          We simulate higher-order reflections (up to order 3) using the Sionna engine. Ray tracing visuals below show Tx-Rx locations and echo paths for both ground truth and predicted floorplans.
         </li>
       </ul>
     </div>
 
     <!-- <div class="content">
       <p>To demonstrate that EchoNeRF solves the true inverse problem, we do the following tasks: 
-        (a) Room Impulse Response  <span style="font-weight: bold;">(RIR) Prediction</span>
+        (a) Room Impulse Response  <span style="font-weight: bold;">(C) Prediction</span>
         (b) <span style="font-weight: bold;">Basic Raytracing.</span>
         We randomly select a Tx-Rx pair inside the floorplan (see Raytracing results below for exact locations) and generate the RIRs using the Sionna Simulator.
         We do this both for the ground truth and post-processed floorplans. 
@@ -309,8 +310,8 @@
 
     <div class="content">
       <!-- Row 1: RIR on Ground Truth Floorplans -->
-      <h3 class="title is-4">a.1 RIR on Ground Truth Floorplans</h3>
-      <p>RIRs generated from the ground truth floorplans using the Sionna simulator.</p>
+      <h3 class="title is-4">a.1 CIR on Ground Truth Floorplans</h3>
+      <!-- <p>CIRs generated from the ground truth floorplans using the Sionna simulator.</p> -->
       <div class="columns">
         <div class="column"><img src="./static/images/2_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 1"></div>
         <div class="column"><img src="./static/images/3_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 2"></div>
@@ -318,8 +319,8 @@
         <div class="column"><img src="./static/images/8_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 4"></div>
       </div>
       <!-- Row 2: RIR on Post-Processed Floorplans -->
-      <h3 class="title is-4">a.2 RIR on Post-Processed Floorplans</h3>
-      <p>RIRs generated from the post-processed floorplans using the Sionna simulator.</p>
+      <h3 class="title is-4">a.2 CIR on Post-Processed Floorplans</h3>
+      <!-- <p>CIRs generated from the post-processed floorplans using the Sionna simulator.</p> -->
       <div class="columns">
         <div class="column"><img src="./static/images/2_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 1"></div>
         <div class="column"><img src="./static/images/3_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 2"></div>
@@ -331,12 +332,12 @@
 
     <div class="content">
       <!-- Row 1: RIR on Ground Truth Floorplans -->
-      <h3 class="title is-4">b.1 Raytracing on Ground Truth Floorplans</h3>
+      <h3 class="title is-4">b.1 Ray tracing on Ground Truth Floorplans</h3>
       <div class="content">
         <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna using both the ground truth and post-processed floorplans.
           <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
            Tx and Rx are shown in the image as <span style="color: red;  font-weight: bold;">red</span> and <span style="color: green;  font-weight: bold;">green</span> stars, respectively.
-          Results are shown below.
+          <!-- Results are shown below. -->
         </p>
       </div>
       <div class="columns is-gapless">
@@ -363,7 +364,7 @@
       </div>
 
       <!-- Row 2: RIR on Post-Processed Floorplans -->
-      <h3 class="title is-4">b.2 Raytracing on Post-Processed Floorplans</h3>
+      <h3 class="title is-4">b.2 Ray tracing on Post-Processed Floorplans</h3>
       <!-- <p>We use the post-processed floorplan to generate the RIRs. The RIRs are generated using the Sionna Simulator.</p> -->
       <div class="columns is-gapless">
         <div class="column" style="padding: 0;">
