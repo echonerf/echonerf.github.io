@@ -62,7 +62,7 @@
   <div class="container">
     <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
-    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path.
+    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path (see <a href="#nerf">[1]</a>).
     In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
     EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
   </div>
@@ -86,6 +86,7 @@
     <!-- <h3 class="title is-3">2. How can EchoNeRF solve a floorplan estimation problem?</h3> -->
     <h3 class="title is-3">2. What applications can EchoNeRF solve?</h3>
     <img src="./static/images/application.png" style="width: 100%;" alt="Floorplan application">
+    <div style="height: 0.7em;"></div>
     <p><em>While EchoNeRF can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
       (a) User's device measures wireless signal power. 
       (b) Transmitted signals arrive at the device along a line of sight (LoS) path and after reflections from surrounding walls. 
@@ -100,7 +101,7 @@
   <div class="container">
     <h2 class="title is-3">3. How do the voxels' opacity change over time?</h2>
      <div class="content"><p>We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
-      At the end, we also show the learning process of NeRF2 (baseline), which is unable to solve the inverse problem.
+      At the end, we also show the learning process of NeRF2 <a href="#nerf2">[2]</a> (baseline), which is unable to solve the inverse problem.
      </p></div>
 
     <!-- Row 1: Ground Truth -->
@@ -184,7 +185,7 @@
         <p>Surely!
           We can use several post-processing steps to improve the output of EchoNeRF.
           <!-- Below, we show the raw images from EchoNeRF and the post-processed images—through traditional image processing and via diffusion models. -->
-          Below, we show the outputs of EchoNeRF and the results of applying post-processing — through traditional image processing and via diffusion models.
+          Below, we show the outputs of EchoNeRF and the results of applying post-processing — through traditional image processing and via diffusion models <a href="#ddpm">[3]</a> .
         </p>
     </div> 
     
@@ -234,7 +235,7 @@
     <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (diffusion models)</h3>
     <div class="content">
       <p>We can also use generative priors to improve the output of EchoNeRF.
-        We first train a diffusion model (DDPM) on the ZInD dataset, which contains clean floorplans. 
+        We first train a diffusion model (DDPM <a href="#ddpm">[3]</a> ) on the ZInD dataset <a href="#zind">[4]</a>, which contains clean floorplans. 
         Once trained, we perform denoising only over the final steps of the diffusion process, starting from the EchoNeRF's output inserted at time step \( t = 100 \).
         The final outputs after denoising are shown below.
       </p>
@@ -305,11 +306,11 @@
       <ul style="margin-left: 1.5rem;">
         <li>
           <strong>Channel Impulse Response (CIR) Prediction:</strong> 
-          We randomly select a Tx-Rx pair inside the floorplan and generate the CIRs using the NVIDIA's Sionna Simulator. This is done for both the ground truth and post-processed floorplans.
+          We randomly select a Tx-Rx pair inside the floorplan and generate the CIRs using the NVIDIA's Sionna Simulator  <a href="#sionna">[5]</a>. This is done for both the ground truth and post-processed floorplans.
         </li>
         <li>
           <strong>Basic Ray tracing:</strong> 
-          We simulate higher-order reflections (up to order 3) using the Sionna engine. Ray tracing visuals below show Tx-Rx locations and echo paths for both ground truth and predicted floorplans.
+          We simulate higher-order reflections (up to order 3) using the Sionna engine <a href="#sionna">[5]</a>. Ray tracing visuals below show Tx-Rx locations and echo paths for both ground truth and predicted floorplans.
         </li>
       </ul>
     </div>
@@ -350,7 +351,7 @@
       <!-- Row 1: RIR on Ground Truth Floorplans -->
       <h3 class="title is-4">b.1 Ray tracing on Ground Truth Floorplans</h3>
       <div class="content">
-        <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna using the ground truth floorplans.
+        <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna <a href="#sionna">[5]</a> using the ground truth floorplans.
           <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
            Tx and Rx are shown in the image as <span style="color: red;  font-weight: bold;">red</span> and <span style="color: green;  font-weight: bold;">green</span> stars, respectively.
           <!-- Results are shown below. -->
@@ -412,6 +413,43 @@
     </div>
 
 
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">References</h3>
+    <ol style="padding-left: 1.5rem; font-size: 1rem; line-height: 1.8;">
+      <li id="nerf">
+        B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, and R. Ng, 
+        "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis," 
+        <em>ECCV</em>, 2020. 
+        <a href="https://arxiv.org/abs/2003.08934" target="_blank">[arXiv]</a>
+      </li>
+      <li id="nerf2">
+        X. Zhao, Z. An, Q. Pan, and L. Yang, "NeRF2: Neural Radio-Frequency Radiance Fields," 
+        <em>Proceedings of the 29th Annual International Conference on Mobile Computing and Networking (MobiCom)</em>, 2023. 
+        <a href="https://arxiv.org/abs/2305.06118" target="_blank">[arXiv]</a>
+      </li>
+      <li id="ddpm">
+        J. Ho, A. Jain, and P. Abbeel, "Denoising Diffusion Probabilistic Models," 
+        <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, 2020. 
+        <a href="https://arxiv.org/abs/2006.11239" target="_blank">[arXiv]</a>
+      </li>
+      <li id="zind">
+        S. Cruz, W. Hutchcroft, Y. Li, R. Martin-Brualla, D. B. Goldman, M. W. Turek, and S. Izadi, 
+        "Zillow Indoor Dataset: Annotated Floor Plans with 360° Panoramas and 3D Room Layouts," 
+        in <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)</em>, 2021. 
+        <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fopenaccess.thecvf.com%2Fcontent%2FCVPR2021%2Fpapers%2FCruz_Zillow_Indoor_Dataset_Annotated_Floor_Plans_With_360deg_Panoramas_and_CVPR_2021_paper.pdf" target="_blank">[PDF]</a>
+      </li>
+      <li id="sionna">
+        J. Hoydis, S. Cammerer, F. Ait Aoudia, A. Vem, N. Binder, G. Marcus, and A. Keller, 
+        "Sionna: An Open-Source Library for Next-Generation Physical Layer Research," 
+        <em>arXiv preprint arXiv:2203.11854</em>, 2022. 
+        <a href="https://arxiv.org/abs/2203.11854" target="_blank">[arXiv]</a>
+      </li>
+    </ol>
   </div>
 </section>
 
