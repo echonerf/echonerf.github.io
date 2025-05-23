@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can NeRFs See Without Cameras?</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      background: #fff;
+    }
+    .container {
+      padding-left: 15rem;
+      padding-right: 15rem;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">Can NeRFs See Without Cameras?</h1>
+      <p style="font-size: 1.1rem; color: #555; font-weight: 500; margin-top: 0.5rem;">
+        In submission to NeurIPS 2025
+      </p>
+      <p style="font-size: 1rem; margin-top: 1rem;">Few visualizations are shown below, especially GIF animations that are difficult to include in the paper.</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">1. How is EchoNeRF different from Camera NeRFs?</h3>
+    <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
+    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LOS) path.
+    In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or "echoes," from walls and other objects in the surrounding environment.
+    EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <!-- <h3 class="title is-3">2. How can EchoNeRF solve a floorplan estimation problem?</h3> -->
+    <h3 class="title is-3">2. What applications can EchoNeRF solve?</h3>
+    <img src="./static/images/application.png" style="width: 100%;" alt="Floorplan application">
+    <p><em>While EchoNeRF is designed to teach multipath reflections to NeRFs and can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
+      (a) User's device measures wireless signal power. 
+      (b) Transmitted signals arrive at the device along a line of sight (LoS) path and after reflections from surrounding walls. 
+      (c) Our LoS model estimates crude walls. 
+      (d) Our $1^{st}$ order reflection model refines the inner and outer walls. 
+      (e) Together, the floorplan is estimated which can then be used to predict signals at new locations.</em></p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">3. How do the voxels' opacity change over time?</h2>
+     <div class="content"><p>We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
+      At the end, we also show the learning process of NeRF2, which is unable to solve the inverse problem.
+     </p></div>
+
+    <!-- Row 1: Ground Truth -->
+    <h3 class="title is-4">Ground truth images</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/images/2_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/images/3_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/images/5_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/images/8_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 4">
+      </div>
+    </div>
+    
+    <!-- Stage 1 -->
+    <h3 class="title is-4">Stage 1</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/2_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/3_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/5_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/8_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 3">
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <h3 class="title is-4" style="margin-top: 1rem;">Stage 2</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/2_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/3_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/5_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/8_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <h3 class="title is-4" style="margin-top: 1rem;">NeRF2</h3>
+    <!-- <p> We also show the learning process of NeRF2, which is unable to solve the inverse problem. </p>  -->
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/2_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/3_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/5_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="./static/videos/8_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">4. Can we improve EchoNeRF's output?</h2>
+    <div class="content">
+        <p>Surely!
+          We can use several post-processing steps to improve the output of EchoNeRF.
+          Below, we show the raw images from EchoNeRF and the post-processed images.
+        </p>
+    </div> 
+    
+    <div class="content" style="margin-bottom: 0;">
+      <!-- Row 2: Raw EchoNeRF -->
+      <h3 class="title is-4" style="margin-top: 1rem;">Raw images from EchoNeRF</h3>
+      <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/2_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 1">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/3_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 2">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/5_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 3">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/8_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 4">
+        </div>
+      </div>
+
+      <!-- Row 3: Post-Processed -->
+      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images</h3>
+      <div class="content">
+        <p>We use the following post-processing steps to generate the final images:
+          The estimated floorplan images are first binarized and then refined by applying morphological closing to fill small white gaps, followed by dilation to expand wall thickness. 
+          A median blur is used to smooth the edges, and finally contour detection is applied to remove small black regions based on area.
+        </p>
+      </div>  
+      <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/2_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 1">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/3_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 2">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/5_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 3">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="./static/images/8_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 4">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">5. What (other) forward taks can EchoNeRF solve once trained?</h2>
+    <div class="content">
+      <p>To demonstrate that EchoNeRF solves the true inverse problem, we do the following tasks: 
+        (a). Room Impulse Response (RIR) Prediction
+        (b). Basic Raytracing
+        We randomly select a Tx-Rx pair inside the floorplan (see Baisc Raytracing results below for exact locations) and generate the RIRs using the Sionna Simulator.
+        We do this both for the ground truth and post-processed floorplans. 
+        Results are shown below.
+      </p>
+    </div>
+    <div class="content">
+      <!-- Row 1: RIR on Ground Truth Floorplans -->
+      <h3 class="title is-4">(a). RIR on Ground Truth Floorplans</h3>
+      <p>RIRs generated from the ground truth floorplans using the Sionna simulator.</p>
+      <div class="columns">
+        <div class="column"><img src="./static/images/2_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 1"></div>
+        <div class="column"><img src="./static/images/3_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 2"></div>
+        <div class="column"><img src="./static/images/5_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 3"></div>
+        <div class="column"><img src="./static/images/8_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 4"></div>
+      </div>
+      <!-- Row 2: RIR on Post-Processed Floorplans -->
+      <h3 class="title is-4">(a). RIR on Post-Processed Floorplans</h3>
+      <p>RIRs generated from the post-processed floorplans using the Sionna simulator.</p>
+      <div class="columns">
+        <div class="column"><img src="./static/images/2_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 1"></div>
+        <div class="column"><img src="./static/images/3_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 2"></div>
+        <div class="column"><img src="./static/images/5_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 3"></div>
+        <div class="column"><img src="./static/images/8_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 4"></div>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <!-- Row 1: RIR on Ground Truth Floorplans -->
+      <h3 class="title is-4">(b). Raytracing on Ground Truth Floorplans</h3>
+      <div class="content">
+        <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna using both the ground truth and post-processed floorplans.
+          <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
+           Tx and Rx are shown in the image as <span style="color: red;  font-weight: bold;">red</span> and <span style="color: green;  font-weight: bold;">green</span> stars, respectively.
+          Results are shown below.
+        </p>
+      </div>
+      <div class="columns is-gapless">
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/2_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 1">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/3_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 2">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/5_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 3">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/8_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 4">
+        </div>
+      </div>
+
+      <!-- Row 2: RIR on Post-Processed Floorplans -->
+      <h3 class="title is-4">(b). Raytracing on Post-Processed Floorplans</h3>
+      <!-- <p>We use the post-processed floorplan to generate the RIRs. The RIRs are generated using the Sionna Simulator.</p> -->
+      <div class="columns is-gapless">
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/2_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 1">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/3_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 2">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/5_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 3">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="./static/images/8_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 4">
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>This site is anonymized for blind review. Last commit is made on 05/22.</p>
+  </div>
+</footer>
+
+</body>
+</html>
