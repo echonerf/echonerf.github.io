@@ -18,6 +18,13 @@
       padding-left: 15rem;
       padding-right: 15rem;
     }
+    .footer {
+      background-color: #f5f5f5;
+      padding: 2rem 1.5rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -40,10 +47,10 @@
 
 <section class="section">
   <div class="container">
-    <h3 class="title is-3">1. How is EchoNeRF different from Camera NeRFs?</h3>
+    <h3 class="title is-3">1. Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
     <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LOS) path.
-    In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or "echoes," from walls and other objects in the surrounding environment.
+    In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
     EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
   </div>
 </section>
@@ -174,7 +181,7 @@
       </div>
 
       <!-- Row 3: Post-Processed -->
-      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images</h3>
+      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (via image processing)</h3>
       <div class="content">
         <p>We use the following post-processing steps to generate the final images:
           The estimated floorplan images are first binarized and then refined by applying morphological closing to fill small white gaps, followed by dilation to expand wall thickness. 
@@ -195,6 +202,62 @@
           <img src="./static/images/8_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 4">
         </div>
       </div>
+
+
+    <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (via diffusion models)</h3>
+    <div class="content">
+      <p>We can also use generative priors to improve the output of EchoNeRF.
+        We first train a diffusion model on the Zind dataset, which contains clean floorplans. 
+        Once trained, we perform denoising only over the final steps of the diffusion process, starting from the EchoNeRF's output inserted at time step 100.
+        The final outputs after denoising are shown below.
+      </p>
+    </div>  
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="./static/images/2_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 1">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="./static/images/3_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 2">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="./static/images/5_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 3">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="./static/images/8_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 4">
+      </div>
+    </div>
+
+
+
+    <!-- Diffusion Trajectories for Each Case -->
+     <div class="content">
+      <p>We also show the intermediate steps visualizing the denoising trajectory. The first column shows the diffusion process at time step 100, which is the output of EchoNeRF with added noise.
+        The last column shows the final denoised output. 
+      </p>
+    </div>
+    <div class="columns is-centered" style="margin-top: 2em; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="./static/images/2_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 2">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="./static/images/3_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 3">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="./static/images/5_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 5">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="./static/images/8_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 8">
+      </div>
+    </div>
+
+
+
 
     </div>
   </div>
