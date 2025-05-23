@@ -7,6 +7,9 @@
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <style>
     body {
       font-family: 'Noto Sans', sans-serif;
@@ -45,13 +48,25 @@
 
 
 
-<section class="section">
+<!-- <section class="section">
   <div class="container">
-    <h3 class="title is-3">1. Generalizing NeRFs to multipath signals</h3>
+    <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
-    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LOS) path.
+    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path.
     In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
     EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
+    <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
+    <ul style="margin-top: 1rem; padding-left: 1.5rem; list-style-type: disc;">
+      <li><em>A camera pixel (left) primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path.</em></li>
+      <li><em>In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment. EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></li>
+    </ul>
   </div>
 </section>
 
@@ -65,7 +80,7 @@
       (a) User's device measures wireless signal power. 
       (b) Transmitted signals arrive at the device along a line of sight (LoS) path and after reflections from surrounding walls. 
       (c) Our LoS model estimates crude walls. 
-      (d) Our $1^{st}$ order reflection model refines the inner and outer walls. 
+      (d) Our \( 1^{st}\)order reflection model refines the inner and outer walls. 
       (e) Together, the floorplan is estimated which can then be used to predict signals at new locations.</em></p>
   </div>
 </section>
@@ -208,7 +223,7 @@
     <div class="content">
       <p>We can also use generative priors to improve the output of EchoNeRF.
         We first train a diffusion model (DDPM) on the ZInD dataset, which contains clean floorplans. 
-        Once trained, we perform denoising only over the final steps of the diffusion process, starting from the EchoNeRF's output inserted at time step t=100.
+        Once trained, we perform denoising only over the final steps of the diffusion process, starting from the EchoNeRF's output inserted at time step \( t = 100 \).
         The final outputs after denoising are shown below.
       </p>
     </div>  
@@ -231,7 +246,7 @@
 
     <!-- Diffusion Trajectories for Each Case -->
      <div class="content">
-      <p>We also show the intermediate steps visualizing the denoising trajectory. The first column shows the diffusion process at time step 100, which is the output of EchoNeRF with added noise.
+      <p>We also show the intermediate steps visualizing the denoising trajectory. The first column shows the diffusion process at time step \( t = 100 \), which is the output of EchoNeRF with added noise.
         The last column shows the final denoised output. 
       </p>
     </div>
@@ -294,7 +309,7 @@
 
     <div class="content">
       <!-- Row 1: RIR on Ground Truth Floorplans -->
-      <h3 class="title is-4">(a) RIR on Ground Truth Floorplans</h3>
+      <h3 class="title is-4">a.1 RIR on Ground Truth Floorplans</h3>
       <p>RIRs generated from the ground truth floorplans using the Sionna simulator.</p>
       <div class="columns">
         <div class="column"><img src="./static/images/2_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 1"></div>
@@ -303,7 +318,7 @@
         <div class="column"><img src="./static/images/8_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 4"></div>
       </div>
       <!-- Row 2: RIR on Post-Processed Floorplans -->
-      <h3 class="title is-4">(a) RIR on Post-Processed Floorplans</h3>
+      <h3 class="title is-4">a.2 RIR on Post-Processed Floorplans</h3>
       <p>RIRs generated from the post-processed floorplans using the Sionna simulator.</p>
       <div class="columns">
         <div class="column"><img src="./static/images/2_pred_channel_impulse_response.png" style="width: 100%;" alt="RIR PP 1"></div>
@@ -316,7 +331,7 @@
 
     <div class="content">
       <!-- Row 1: RIR on Ground Truth Floorplans -->
-      <h3 class="title is-4">(b) Raytracing on Ground Truth Floorplans</h3>
+      <h3 class="title is-4">b.1 Raytracing on Ground Truth Floorplans</h3>
       <div class="content">
         <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna using both the ground truth and post-processed floorplans.
           <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
@@ -348,7 +363,7 @@
       </div>
 
       <!-- Row 2: RIR on Post-Processed Floorplans -->
-      <h3 class="title is-4">(b) Raytracing on Post-Processed Floorplans</h3>
+      <h3 class="title is-4">b.2 Raytracing on Post-Processed Floorplans</h3>
       <!-- <p>We use the post-processed floorplan to generate the RIRs. The RIRs are generated using the Sionna Simulator.</p> -->
       <div class="columns is-gapless">
         <div class="column" style="padding: 0;">
