@@ -7,10 +7,13 @@
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="./static/css/bulma.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-  <style>
+  <!-- <style>
     body {
       font-family: 'Noto Sans', sans-serif;
       font-size: 18px;
@@ -37,13 +40,102 @@
   .hero .container p {
   text-align: center !important;
 }
+  </style> -->
+  <style>
+    /* ---- Global type & layout ---- */
+    :root {
+      --container-max: 1200px;
+    }
+    html, body {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      background: #fff;
+      color: #111;
+    }
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 1.25rem;           /* mobile-safe side padding */
+    }
+
+    /* Centered text only where intended */
+    p, li { text-align: justify; }
+    .has-text-centered p { text-align: center; }
+
+    /* Make every image responsive */
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* Hero */
+    .hero { background: #fff; }
+    .hero .title { font-family: 'Google Sans', sans-serif; }
+    .subtitle-badge {
+      font-size: 1.05rem;
+      color: #555;
+      font-weight: 600;
+      margin-top: .5rem;
+    }
+
+    /* Author block */
+    .author-block { margin-top: 0.75rem; }
+    .author-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem .8rem;
+      justify-content: center;
+      font-size: 1.05rem;
+    }
+    .author-list a { color: #1a73e8; text-decoration: none; }
+    .author-list a:hover { text-decoration: underline; }
+    .affiliations {
+      margin-top: .35rem;
+      color: #666;
+      font-size: 0.95rem;
+    }
+    sup { font-size: 0.7em; top: -0.6em; }
+
+    /* Link buttons row */
+    .links-row {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+    }
+
+    /* Section spacing */
+    section.section { padding-top: 2.25rem; padding-bottom: 2.25rem; }
+    .title.is-3 { margin-bottom: 1rem; }
+    .title.is-4 { margin-top: 1rem; margin-bottom: .5rem; }
+
+    /* Footer */
+    .footer {
+      background-color: #f5f5f5;
+      padding: 1.5rem 1rem;
+    }
+
+  /* --- Headings (override Bulma) --- */
+    /* .title.is-1 { font-size: 1.8rem; line-height: 1.2; } */
+    .title.is-3 { font-size: 1.85rem; line-height: 1.3; }  
+    .title.is-4 { font-size: 1.35rem;  line-height: 1.3; } 
+
+    /* Optional: slightly tighter vertical rhythm */
+    section.section { padding-top: 1.6rem; padding-bottom: 1.6rem; }
+
+    /* Small tweaks for narrow phones */
+    @media (max-width: 768px) {
+      html, body { font-size: 16px; }
+      .hero .title.is-1 { font-size: 1.9rem; }
+      .subtitle-badge { font-size: .95rem; }
+      .title.is-3 { font-size: 1.35rem; }
+      .title.is-4 { font-size: 1.15rem; }
+    }
 
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
-<section class="hero">
+<!-- <section class="hero">
   <div class="hero-body">
     <div class="container has-text-centered">
       <h1 class="title is-1">Can NeRFs See Without Cameras?</h1>
@@ -53,8 +145,61 @@
       <p style="font-size: 1rem; margin-top: 1rem;">Few visualizations are shown below, especially GIF animations that are difficult to include in the paper.</p>
     </div>
   </div>
-</section>
+</section> -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">Can NeRFs See Without Cameras?</h1>
+      <div class="subtitle-badge">NeurIPS 2025</div>
+      <div class="author-block">
+        <div class="author-list">
+          <!-- TODO: replace with real author names & links -->
+          <a href="https://achaitanya.web.illinois.edu/">Chaitanya Amballa</a><sup>1</sup>,
+          <a href="https://basusattwik.github.io/">Sattwik Basu</a><sup>1*</sup>,
+          <a href="https://yulinlw2.web.illinois.edu/">Yu-Lin Wei</a><sup>1*</sup>,
+          <a href="#">Zhijian Yang</a><sup>2</sup>,
+          <a href="#">Mehmet Ergezer</a><sup>2</sup>,
+          <a href="https://croy.web.engr.illinois.edu/">Romit Roy Choudhury</a><sup>1,2</sup>
+        </div>
+        <div class="affiliations">
+          <sup>1</sup> University of Illinois Urbana-Champaign; <sup>2</sup> Amazon
+        </div>
+        <div class="affiliations">
+          <sup>*</sup> <span style="font-size: 0.85em;">Equal contribution</span>
+        </div>
+      </div>
 
+      <!-- old stuff -->
+      <!-- <div class="links-row">
+        <a class="button is-dark is-medium" href="https://arxiv.org/pdf/2505.22441" target="_blank">
+          <span class="icon">📄</span><span>Paper</span>
+        </a> -->
+        <!-- Add more when ready: Code, Video, Data
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">💻</span><span>Code</span></a>
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">🎬</span><span>Video</span></a>
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">📦</span><span>Data</span></a>
+        -->
+      <!-- </div> -->
+
+      <div class="links-row">
+        <a class="button is-dark is-normal is-rounded"
+          href="https://arxiv.org/pdf/2505.22441" target="_blank" rel="noopener">
+          <span class="icon">📄</span><span>Paper</span>
+        </a>
+        <a class="button is-dark is-normal is-rounded"
+          href="https://arxiv.org/abs/2505.22441" target="_blank" rel="noopener">
+          <span class="icon"><i class="ai ai-arxiv"></i></span>
+          <span>arXiv</span>
+        </a>
+      </div>
+
+
+      <!-- <p style="font-size: 1rem; margin-top: 1rem;">
+        Few visualizations are shown below, especially GIF animations that are difficult to include in the paper.
+      </p> -->
+    </div>
+  </div>
+</section>
 
 
 
@@ -100,8 +245,8 @@
 <section class="section">
   <div class="container">
     <h2 class="title is-3">3. How do the voxels' opacity change over time?</h2>
-     <div class="content"><p>We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
-      At the end, we also show the learning process of NeRF2 <a href="#nerf2">[2]</a> (baseline), which is unable to solve the inverse problem.
+     <div class="content"><p>Few visualizations are shown below, especially GIF animations that are difficult to include in the paper. We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
+      <!-- At the end, we also show the learning process of NeRF2 <a href="#nerf2">[2]</a> (baseline), which is unable to solve the inverse problem. -->
      </p></div>
 
     <!-- Row 1: Ground Truth -->
@@ -156,9 +301,9 @@
     </div>
 
     <!-- Stage 3 -->
-    <h3 class="title is-4" style="margin-top: 1rem;">NeRF2</h3>
+    <!-- <h3 class="title is-4" style="margin-top: 1rem;">NeRF2</h3> -->
     <!-- <p> We also show the learning process of NeRF2, which is unable to solve the inverse problem. </p>  -->
-    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+    <!-- <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
       <div class="column is-one-quarter" style="padding-bottom: 0;">
         <img src="./static/videos/2_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 1">
       </div>
@@ -171,7 +316,7 @@
       <div class="column is-one-quarter" style="padding-bottom: 0;">
         <img src="./static/videos/8_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
       </div>
-    </div>
+    </div> -->
 
   </div>
 </section>
@@ -182,7 +327,7 @@
   <div class="container">
     <h2 class="title is-3">4. Can we improve EchoNeRF's output?</h2>
     <div class="content">
-        <p>Surely!
+        <p>
           We can use several post-processing steps to improve the output of EchoNeRF.
           <!-- Below, we show the raw images from EchoNeRF and the post-processed images—through traditional image processing and via diffusion models. -->
           Below, we show the outputs of EchoNeRF and the results of applying post-processing — through traditional image processing and via diffusion models <a href="#ddpm">[3]</a> .
@@ -454,11 +599,28 @@
 </section>
 
 
-<footer class="footer">
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">BibTeX</h3>
+<pre style="overflow:auto; padding:1rem; background:#f7f7f7; border-radius:8px; border:1px solid #eee; font-size:0.9rem;">
+    @inproceedings{echo-nerf-2025,
+      title     = {Can NeRFs See Without Cameras?},
+      author    = {Amballa, Chaitanya and Basu, Sattwik and Wei, Yu-Lin and Yang, Zhijian and Ergezer, Mehmet and Choudhury, Romit Roy},
+      booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+      year      = {2025},
+      url       = {https://arxiv.org/pdf/2505.22441},
+      eprint    = {2505.22441},
+      archivePrefix = {arXiv}
+    }
+</pre>
+  </div>
+</section>
+
+<!-- <footer class="footer">
   <div class="content has-text-centered">
     <p>This site is anonymized for blind review. Last commit is made on 05/22.</p>
   </div>
-</footer>
+</footer> -->
 
 </body>
 </html>
