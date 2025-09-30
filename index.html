@@ -201,11 +201,27 @@
   </div>
 </section>
 
-
+<section id="compare" class="section">
+  <div class="container">
+    <h3 class="title is-3">1. How is EchoNeRF different from vanilla NeRFs?</h3>
+    <img src="./static/images/intro3.png" style="width: 100%;" alt="Left: vanilla NeRF—cameras capture light from an object (e.g., a bulldozer). Right: EchoNeRF—phones capture RF multipath echoes from a house." />
+    <div>
+      <p>
+        In <strong> NeRFs</strong> (left), the sensors are <em>cameras</em> that record <em>light</em> (as RGB images) coming from an object of interest (bulldozer).
+        From these multi-view RGB images, (optical) NeRFs learns to synthesize novel views of the object and reconstruct its shape.
+        Similarly, in <strong>EchoNeRF</strong> (right), the sensors are <em>phones</em> that measure <em>RF signals</em> (as signal strength)
+        present in an environment (the house), except the measurements are now made inside the environment as opposed to outside.
+        Given a few such RF measurements, EchoNeRF learns to infer the spatial layout of the house.
+        While NeRFs use cameras to see objects, EchoNeRF uses RF signals to see environments.
+        How does EchoNeRF achieve this?
+      </p>
+    </div>
+  </div>
+</section>
 
 <section class="section">
   <div class="container">
-    <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
+    <h3 class="title is-3">2. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
     <img src="./static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
     <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path (see <a href="#nerf">[1]</a>).
     In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
@@ -229,7 +245,7 @@
 <section class="section">
   <div class="container">
     <!-- <h3 class="title is-3">2. How can EchoNeRF solve a floorplan estimation problem?</h3> -->
-    <h3 class="title is-3">2. What applications can EchoNeRF solve?</h3>
+    <h3 class="title is-3">3. What applications can EchoNeRF solve?</h3>
     <img src="./static/images/application.png" style="width: 100%;" alt="Floorplan application">
     <div style="height: 0.7em;"></div>
     <p><em>While EchoNeRF can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
@@ -244,7 +260,7 @@
 
 <section class="section">
   <div class="container">
-    <h2 class="title is-3">3. How do the voxels' opacity change over time?</h2>
+    <h2 class="title is-3">4. How do the voxels' opacity change over time?</h2>
      <div class="content"><p>Few visualizations are shown below, especially GIF animations that are difficult to include in the paper. We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
       <!-- At the end, we also show the learning process of NeRF2 <a href="#nerf2">[2]</a> (baseline), which is unable to solve the inverse problem. -->
      </p></div>
@@ -325,7 +341,7 @@
 
 <section class="section">
   <div class="container">
-    <h2 class="title is-3">4. Can we improve EchoNeRF's output?</h2>
+    <h2 class="title is-3">5. Can we improve EchoNeRF's output?</h2>
     <div class="content">
         <p>
           We can use several post-processing steps to improve the output of EchoNeRF.
@@ -444,7 +460,7 @@
 
 <section class="section">
   <div class="container">
-    <h2 class="title is-3">5. What (other) forward tasks can EchoNeRF solve?</h2>
+    <h2 class="title is-3">6. What (other) forward tasks can EchoNeRF solve?</h2>
 
     <div class="content">
       <p>To demonstrate that EchoNeRF solves the true inverse problem, we perform the following tasks:
