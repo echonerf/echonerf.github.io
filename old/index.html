@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Can NeRFs See Without Cameras?</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/bulma.min.css">
+  <link rel="stylesheet" href="/static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      background: #fff;
+    }
+    .container {
+      padding-left: 15rem;
+      padding-right: 15rem;
+    }
+    .footer {
+      background-color: #f5f5f5;
+      padding: 2rem 1.5rem;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+    p, li {
+    text-align: justify;
+  }
+  footer p {
+  text-align: center !important;
+  } 
+  .hero .container p {
+  text-align: center !important;
+}
+  </style> -->
+  <style>
+    /* ---- Global type & layout ---- */
+    :root {
+      --container-max: 1200px;
+    }
+    html, body {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+      background: #fff;
+      color: #111;
+    }
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 1.25rem;           /* mobile-safe side padding */
+    }
+
+    /* Centered text only where intended */
+    p, li { text-align: justify; }
+    .has-text-centered p { text-align: center; }
+
+    /* Make every image responsive */
+    img { max-width: 100%; height: auto; display: block; }
+
+    /* Hero */
+    .hero { background: #fff; }
+    .hero .title { font-family: 'Google Sans', sans-serif; }
+    .subtitle-badge {
+      font-size: 1.05rem;
+      color: #555;
+      font-weight: 600;
+      margin-top: .5rem;
+    }
+
+    /* Author block */
+    .author-block { margin-top: 0.75rem; }
+    .author-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem .8rem;
+      justify-content: center;
+      font-size: 1.05rem;
+    }
+    .author-list a { color: #1a73e8; text-decoration: none; }
+    .author-list a:hover { text-decoration: underline; }
+    .affiliations {
+      margin-top: .35rem;
+      color: #666;
+      font-size: 0.95rem;
+    }
+    sup { font-size: 0.7em; top: -0.6em; }
+
+    /* Link buttons row */
+    .links-row {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+    }
+
+    /* Section spacing */
+    section.section { padding-top: 2.25rem; padding-bottom: 2.25rem; }
+    .title.is-3 { margin-bottom: 1rem; }
+    .title.is-4 { margin-top: 1rem; margin-bottom: .5rem; }
+
+    /* Footer */
+    .footer {
+      background-color: #f5f5f5;
+      padding: 1.5rem 1rem;
+    }
+
+  /* --- Headings (override Bulma) --- */
+    /* .title.is-1 { font-size: 1.8rem; line-height: 1.2; } */
+    .title.is-3 { font-size: 1.85rem; line-height: 1.3; }  
+    .title.is-4 { font-size: 1.35rem;  line-height: 1.3; } 
+
+    /* Optional: slightly tighter vertical rhythm */
+    section.section { padding-top: 1.6rem; padding-bottom: 1.6rem; }
+
+    /* Small tweaks for narrow phones */
+    @media (max-width: 768px) {
+      html, body { font-size: 16px; }
+      .hero .title.is-1 { font-size: 1.9rem; }
+      .subtitle-badge { font-size: .95rem; }
+      .title.is-3 { font-size: 1.35rem; }
+      .title.is-4 { font-size: 1.15rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- <section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">Can NeRFs See Without Cameras?</h1>
+      <p style="font-size: 1.1rem; color: #555; font-weight: 500; margin-top: 0.5rem;">
+        In submission to NeurIPS 2025
+      </p>
+      <p style="font-size: 1rem; margin-top: 1rem;">Few visualizations are shown below, especially GIF animations that are difficult to include in the paper.</p>
+    </div>
+  </div>
+</section> -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">Can NeRFs See Without Cameras?</h1>
+      <div class="subtitle-badge">NeurIPS 2025</div>
+      <div class="author-block">
+        <div class="author-list">
+          <!-- TODO: replace with real author names & links -->
+          <a href="https://achaitanya.web.illinois.edu/">Chaitanya Amballa</a><sup>1</sup>,
+          <a href="https://basusattwik.github.io/">Sattwik Basu</a><sup>1*</sup>,
+          <a href="https://yulinlw2.web.illinois.edu/">Yu-Lin Wei</a><sup>1*</sup>,
+          <a href="#">Zhijian Yang</a><sup>2</sup>,
+          <a href="#">Mehmet Ergezer</a><sup>2</sup>,
+          <a href="https://croy.web.engr.illinois.edu/">Romit Roy Choudhury</a><sup>1,2</sup>
+        </div>
+        <div class="affiliations">
+          <sup>1</sup> University of Illinois Urbana-Champaign; <sup>2</sup> Amazon
+        </div>
+        <div class="affiliations">
+          <sup>*</sup> <span style="font-size: 0.85em;">Equal contribution</span>
+        </div>
+      </div>
+
+      <!-- old stuff -->
+      <!-- <div class="links-row">
+        <a class="button is-dark is-medium" href="https://arxiv.org/pdf/2505.22441" target="_blank">
+          <span class="icon">📄</span><span>Paper</span>
+        </a> -->
+        <!-- Add more when ready: Code, Video, Data
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">💻</span><span>Code</span></a>
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">🎬</span><span>Video</span></a>
+        <a class="button is-light is-medium" href="#" target="_blank"><span class="icon">📦</span><span>Data</span></a>
+        -->
+      <!-- </div> -->
+
+      <div class="links-row">
+        <a class="button is-dark is-normal is-rounded"
+          href="https://arxiv.org/pdf/2505.22441" target="_blank" rel="noopener">
+          <span class="icon">📄</span><span>Paper</span>
+        </a>
+        <a class="button is-dark is-normal is-rounded"
+          href="https://arxiv.org/abs/2505.22441" target="_blank" rel="noopener">
+          <span class="icon"><i class="ai ai-arxiv"></i></span>
+          <span>arXiv</span>
+        </a>
+      </div>
+
+
+      <!-- <p style="font-size: 1rem; margin-top: 1rem;">
+        Few visualizations are shown below, especially GIF animations that are difficult to include in the paper.
+      </p> -->
+    </div>
+  </div>
+</section>
+
+<section id="compare" class="section">
+  <div class="container">
+    <h3 class="title is-3">1. How is EchoNeRF different from vanilla NeRFs?</h3>
+    <img src="/static/images/intro3.png" style="width: 100%;" alt="Left: vanilla NeRF—cameras capture light from an object (e.g., a bulldozer). Right: EchoNeRF—phones capture RF multipath echoes from a house." />
+    <div>
+      <p>
+        In <strong> NeRFs</strong> (left), the sensors are <em>cameras</em> that record <em>light</em> (as RGB images) coming from an object of interest (bulldozer).
+        From these multi-view RGB images, (optical) NeRFs learns to synthesize novel views of the object and reconstruct its shape.
+        Similarly, in <strong>EchoNeRF</strong> (right), the sensors are <em>phones</em> that measure <em>RF signals</em> (as signal strength)
+        present in an environment (the house), except the measurements are now made inside the environment as opposed to outside.
+        Given a few such RF measurements, EchoNeRF learns to infer the spatial layout of the house.
+        While NeRFs use cameras to see objects, EchoNeRF uses RF signals to see environments.
+        How does EchoNeRF achieve this?
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">2. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
+    <img src="/static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
+    <p><em> A camera pixel (left)  primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path (see <a href="#nerf">[1]</a>).
+    In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes,” from walls and other objects in the surrounding environment.
+    EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></p>
+  </div>
+</section>
+
+<!-- 
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">1. EchoNeRF: Generalizing NeRFs to multipath signals</h3>
+    <img src="/static/images/overview_4.png" style="width: 100%;" alt="Overview of Camera NeRFs vs EchoNeRF">
+    <ul style="margin-top: 1rem; padding-left: 1.5rem; list-style-type: disc;">
+      <li><em>A camera pixel (left) primarily captures light arriving directly from the object in front of it—along the line-of-sight (LoS) path.</em></li>
+      <li><em>In contrast, an RF sensor (right) such as a WiFi receiver collects signals that include multiple reflections, or “echoes” from walls and other objects in the surrounding environment. EchoNeRF is designed to learn from such multipath signals, enabling it to “see” the environment and infer spatial structure from sparse WiFi measurements.</em></li>
+    </ul>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container">
+    <!-- <h3 class="title is-3">2. How can EchoNeRF solve a floorplan estimation problem?</h3> -->
+    <h3 class="title is-3">3. What applications can EchoNeRF solve?</h3>
+    <img src="/static/images/application.png" style="width: 100%;" alt="Floorplan application">
+    <div style="height: 0.7em;"></div>
+    <p><em>While EchoNeRF can be viewed as a general framework, as an application, we show how it can be used to solve a floorplan estimation problem in the above figure.
+      (a) User's device measures wireless signal power. 
+      (b) Transmitted signals arrive at the device along a line of sight (LoS) path and after reflections from surrounding walls. 
+      (c) Our LoS model estimates crude walls. 
+      (d) Our first-order reflection model refines the inner and outer walls. 
+      (e) Together, the floorplan is estimated which can then be used to predict signals at new locations.</em></p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">4. How do the voxels' opacity change over time?</h2>
+     <div class="content"><p>Few visualizations are shown below, especially GIF animations that are difficult to include in the paper. We show EchoNeRF's two-stage learning process below and compare with the ground truth floorplan.
+      <!-- At the end, we also show the learning process of NeRF2 <a href="#nerf2">[2]</a> (baseline), which is unable to solve the inverse problem. -->
+     </p></div>
+
+    <!-- Row 1: Ground Truth -->
+    <h3 class="title is-4">Ground Truth</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/images/2_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/images/3_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/images/5_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/images/8_gt.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="GT 4">
+      </div>
+    </div>
+    
+    <!-- Stage 1 -->
+    <h3 class="title is-4">Stage 1</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/2_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/3_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/5_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/8_los.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 1 - 3">
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <h3 class="title is-4" style="margin-top: 1rem;">Stage 2</h3>
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/2_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/3_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/5_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/8_full.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <!-- <h3 class="title is-4" style="margin-top: 1rem;">NeRF2</h3> -->
+    <!-- <p> We also show the learning process of NeRF2, which is unable to solve the inverse problem. </p>  -->
+    <!-- <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/2_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 1">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/3_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 2">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/5_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+      <div class="column is-one-quarter" style="padding-bottom: 0;">
+        <img src="/static/videos/8_nerf2.gif" style="width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Stage 2 - 3">
+      </div>
+    </div> -->
+
+  </div>
+</section>
+
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">5. Can we improve EchoNeRF's output?</h2>
+    <div class="content">
+        <p>
+          We can use several post-processing steps to improve the output of EchoNeRF.
+          <!-- Below, we show the raw images from EchoNeRF and the post-processed images—through traditional image processing and via diffusion models. -->
+          Below, we show the outputs of EchoNeRF and the results of applying post-processing — through traditional image processing and via diffusion models <a href="#ddpm">[3]</a> .
+        </p>
+    </div> 
+    
+    <div class="content" style="margin-bottom: 0;">
+      <!-- Row 2: Raw EchoNeRF -->
+      <h3 class="title is-4" style="margin-top: 1rem;">Output images from EchoNeRF</h3>
+      <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/2_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 1">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/3_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 2">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/5_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 3">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/8_pre.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Raw 4">
+        </div>
+      </div>
+
+      <!-- Row 3: Post-Processed -->
+      <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (image processing)</h3>
+      <div class="content">
+        <p>
+          <!-- We use the following post-processing steps to generate the final images: -->
+          The estimated floorplan images are first binarized and then refined by applying morphological closing to fill small white gaps, followed by dilation to expand wall thickness. 
+          A median blur is used to smooth the edges, and finally contour detection is applied to remove small black regions based on area.
+        </p>
+      </div>  
+      <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/2_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 1">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/3_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 2">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/5_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 3">
+        </div>
+        <div class="column is-one-quarter" style="padding-bottom: 0;">
+          <img src="/static/images/8_post.png" style="max-width: 100%; transform: scale(0.75); margin-bottom: 0;" alt="Post 4">
+        </div>
+      </div>
+
+
+    <h3 class="title is-4" style="margin-top: 1rem;">Post-processed images (diffusion models)</h3>
+    <div class="content">
+      <p>We can also use generative priors to improve the output of EchoNeRF.
+        We first train a diffusion model (DDPM <a href="#ddpm">[3]</a> ) on the ZInD dataset <a href="#zind">[4]</a>, which contains clean floorplans. 
+        Once trained, we perform denoising only over the final steps of the diffusion process, starting from the EchoNeRF's output inserted at time step \( t = 100 \).
+        The final outputs after denoising are shown below.
+      </p>
+    </div>  
+    <div class="columns is-multiline is-centered" style="margin-bottom: 0;">
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="/static/images/2_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 1">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="/static/images/3_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 2">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="/static/images/5_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 3">
+      </div>
+      <div class="column is-one-quarter" style="padding: 2rem;">
+        <img src="/static/images/8_post_diff.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Post 4">
+      </div>
+    </div>
+
+
+
+    <!-- Diffusion Trajectories for Each Case -->
+     <div class="content">
+      <p>We also show the intermediate steps visualizing the denoising trajectory. The first column shows the diffusion process at time step \( t = 100 \), which is the output of EchoNeRF with added noise.
+        The last column shows the final denoised output. 
+      </p>
+    </div>
+    <div class="columns is-centered" style="margin-top: 2em; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="/static/images/2_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 2">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="/static/images/3_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 3">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="/static/images/5_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 5">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 1rem;">
+        <img src="/static/images/8_diff_process.png" style="width: 100%; height: auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.1);" alt="Diffusion Trajectory 8">
+      </div>
+    </div>
+    <div class="columns is-centered" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="column is-full" style="padding: 0.1rem;">
+        <img src="/static/images/arrow_2.png" style="width: 100%; height: auto;" alt="Diffusion Trajectory 8">
+      </div>
+    </div>
+
+
+
+
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h2 class="title is-3">6. What (other) forward tasks can EchoNeRF solve?</h2>
+
+    <div class="content">
+      <p>To demonstrate that EchoNeRF solves the true inverse problem, we perform the following tasks:
+      <ul style="margin-left: 1.5rem;">
+        <li>
+          <strong>Channel Impulse Response (CIR) Prediction:</strong> 
+          We randomly select a Tx-Rx pair inside the floorplan and generate the CIRs using the NVIDIA's Sionna Simulator  <a href="#sionna">[5]</a>. This is done for both the ground truth and post-processed floorplans.
+        </li>
+        <li>
+          <strong>Basic Ray tracing:</strong> 
+          We simulate higher-order reflections (up to order 3) using the Sionna engine <a href="#sionna">[5]</a>. Ray tracing visuals below show Tx-Rx locations and echo paths for both ground truth and predicted floorplans.
+        </li>
+      </ul>
+    </div>
+
+    <!-- <div class="content">
+      <p>To demonstrate that EchoNeRF solves the true inverse problem, we do the following tasks: 
+        (a) Room Impulse Response  <span style="font-weight: bold;">(C) Prediction</span>
+        (b) <span style="font-weight: bold;">Basic Raytracing.</span>
+        We randomly select a Tx-Rx pair inside the floorplan (see Raytracing results below for exact locations) and generate the RIRs using the Sionna Simulator.
+        We do this both for the ground truth and post-processed floorplans. 
+        Results are shown below.
+      </p>
+    </div> -->
+
+    <div class="content">
+      <!-- Row 1: RIR on Ground Truth Floorplans -->
+      <h3 class="title is-4">a.1 CIR on Ground Truth Floorplans</h3>
+      <!-- <p>CIRs generated from the ground truth floorplans using the Sionna simulator.</p> -->
+      <div class="columns">
+        <div class="column"><img src="/static/images/2_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 1"></div>
+        <div class="column"><img src="/static/images/3_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 2"></div>
+        <div class="column"><img src="/static/images/5_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 3"></div>
+        <div class="column"><img src="/static/images/8_gt_channel_impulse_response.png" style="width: 100%;" alt="RIR GT 4"></div>
+      </div>
+      <!-- Row 2: RIR on Post-Processed Floorplans -->
+      <h3 class="title is-4">a.2 CIR on Post-Processed Floorplans</h3>
+      <!-- <p>CIRs generated from the post-processed floorplans using the Sionna simulator.</p> -->
+      <div class="columns">
+        <div class="column"><img src="/static/images/2_pred_channel_impulse_response_new.png" style="width: 100%;" alt="RIR PP 1"></div>
+        <div class="column"><img src="/static/images/3_pred_channel_impulse_response_new.png" style="width: 100%;" alt="RIR PP 2"></div>
+        <div class="column"><img src="/static/images/5_pred_channel_impulse_response_new.png" style="width: 100%;" alt="RIR PP 3"></div>
+        <div class="column"><img src="/static/images/8_pred_channel_impulse_response_new.png" style="width: 100%;" alt="RIR PP 4"></div>
+      </div>
+    </div>
+
+
+    <div class="content">
+      <!-- Row 1: RIR on Ground Truth Floorplans -->
+      <h3 class="title is-4">b.1 Ray tracing on Ground Truth Floorplans</h3>
+      <div class="content">
+        <p>We also show the ray tracing results by generating higher order reflections (until order 3) using Sionna <a href="#sionna">[5]</a> using the ground truth floorplans.
+          <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
+           Tx and Rx are shown in the image as <span style="color: red;  font-weight: bold;">red</span> and <span style="color: green;  font-weight: bold;">green</span> stars, respectively.
+          <!-- Results are shown below. -->
+        </p>
+      </div>
+      <div class="columns is-gapless">
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/2_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 1">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/3_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 2">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/5_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 3">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/8_new_gt_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR GT 4">
+        </div>
+      </div>
+
+      <!-- Row 2: RIR on Post-Processed Floorplans -->
+      <h3 class="title is-4">b.2 Ray tracing on Post-Processed Floorplans</h3>
+      <div class="content">
+        <p>We repeat the above steps for the post-processed floorplans, and show the results below.
+          <!-- Tx-Rx pairs can be found by observing the ray intersections. -->
+          <!-- Results are shown below. -->
+        </p>
+      <!-- <p>We use the post-processed floorplan to generate the RIRs. The RIRs are generated using the Sionna Simulator.</p> -->
+      <div class="columns is-gapless">
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/2_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 1">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/3_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 2">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/5_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 3">
+        </div>
+        <div class="column" style="padding: 0;">
+          <img src="/static/images/8_new_pred_scene.png"
+              style="width: 100%; padding-left: 30px; padding-right: 30px;"
+              alt="RIR PP 4">
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">References</h3>
+    <ol style="padding-left: 1.5rem; font-size: 1rem; line-height: 1.8;">
+      <li id="nerf">
+        B. Mildenhall, P. P. Srinivasan, M. Tancik, J. T. Barron, R. Ramamoorthi, and R. Ng, 
+        "NeRF: Representing Scenes as Neural Radiance Fields for View Synthesis," 
+        <em>ECCV</em>, 2020. 
+        <a href="https://arxiv.org/abs/2003.08934" target="_blank">[arXiv]</a>
+      </li>
+      <li id="nerf2">
+        X. Zhao, Z. An, Q. Pan, and L. Yang, "NeRF2: Neural Radio-Frequency Radiance Fields," 
+        <em>Proceedings of the 29th Annual International Conference on Mobile Computing and Networking (MobiCom)</em>, 2023. 
+        <a href="https://arxiv.org/abs/2305.06118" target="_blank">[arXiv]</a>
+      </li>
+      <li id="ddpm">
+        J. Ho, A. Jain, and P. Abbeel, "Denoising Diffusion Probabilistic Models," 
+        <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, 2020. 
+        <a href="https://arxiv.org/abs/2006.11239" target="_blank">[arXiv]</a>
+      </li>
+      <li id="zind">
+        S. Cruz, W. Hutchcroft, Y. Li, R. Martin-Brualla, D. B. Goldman, M. W. Turek, and S. Izadi, 
+        "Zillow Indoor Dataset: Annotated Floor Plans with 360° Panoramas and 3D Room Layouts," 
+        in <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)</em>, 2021. 
+        <a href="https://docs.google.com/viewer?url=https%3A%2F%2Fopenaccess.thecvf.com%2Fcontent%2FCVPR2021%2Fpapers%2FCruz_Zillow_Indoor_Dataset_Annotated_Floor_Plans_With_360deg_Panoramas_and_CVPR_2021_paper.pdf" target="_blank">[PDF]</a>
+      </li>
+      <li id="sionna">
+        J. Hoydis, S. Cammerer, F. Ait Aoudia, A. Vem, N. Binder, G. Marcus, and A. Keller, 
+        "Sionna: An Open-Source Library for Next-Generation Physical Layer Research," 
+        <em>arXiv preprint arXiv:2203.11854</em>, 2022. 
+        <a href="https://arxiv.org/abs/2203.11854" target="_blank">[arXiv]</a>
+      </li>
+    </ol>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container">
+    <h3 class="title is-3">BibTeX</h3>
+<pre style="overflow:auto; padding:1rem; background:#f7f7f7; border-radius:8px; border:1px solid #eee; font-size:0.9rem;">
+    @inproceedings{echo-nerf-2025,
+      title     = {Can NeRFs See Without Cameras?},
+      author    = {Amballa, Chaitanya and Basu, Sattwik and Wei, Yu-Lin and Yang, Zhijian and Ergezer, Mehmet and Choudhury, Romit Roy},
+      booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+      year      = {2025},
+      url       = {https://arxiv.org/pdf/2505.22441},
+      eprint    = {2505.22441},
+      archivePrefix = {arXiv}
+    }
+</pre>
+  </div>
+</section>
+
+<!-- <footer class="footer">
+  <div class="content has-text-centered">
+    <p>This site is anonymized for blind review. Last commit is made on 05/22.</p>
+  </div>
+</footer> -->
+
+</body>
+</html>
